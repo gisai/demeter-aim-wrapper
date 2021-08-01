@@ -1,0 +1,35 @@
+{
+  "@graph" : [ {
+    "@id" : "urn:upm:demeter:p52:{{device}}:{{observation}}",
+    "@type" : "Observation",   
+    "hasResult" : ["urn:upm:demeter:p52:{{device}}:{{observation}}/temp","urn:upm:demeter:p52:{{device}}:{{observation}}/hum", "urn:upm:demeter:p52:{{device}}:{{observation}}/co2", "urn:upm:demeter:p52:{{device}}:{{observation}}/tvoc"] ,
+    "madeBySensor" : "urn:upm:demeter:p52:{{device}}",
+    "resultTime" : "{{timestamp}}"
+  }, {
+    "@id" : "urn:upm:demeter:p52:{{device}}:{{observation}}/temp",
+    "@type" : "Result",
+    "identifier" : "temp",    
+    "numericValue" : "{{result-temp}}",
+    "unit" : "http://qudt.org/vocab/unit/DEG_C"
+  },
+ {
+    "@id" : "urn:upm:demeter:p52:{{device}}:{{observation}}/hum",
+    "@type" : "Result",
+    "identifier" : "hum",    
+    "numericValue" : "{{result-hum}}",
+    "unit" : "http://qudt.org/vocab/unit/PERCENT_RH"
+  },
+  {
+    "@id" : "urn:upm:demeter:p52:{{device}}:{{observation}}/co2",
+    "@type" : "Result",
+    "identifier" : "co2",    
+    "numericValue" : "{{result-co2}}",
+    "unit" : "http://qudt.org/vocab/unit/PPM"
+  }, {
+    "@id" : "urn:upm:demeter:p52:{{device}}:{{observation}}/tvoc",
+    "@type" : "Result",
+    "identifier" : "tvoc",    
+    "numericValue" : "{{result-tvoc}}",
+    "unit" : "http://qudt.org/vocab/unit/MilliGM-PER-M3"
+  } ]
+}

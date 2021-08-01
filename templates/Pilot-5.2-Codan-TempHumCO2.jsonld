@@ -1,0 +1,46 @@
+{
+  "@graph" : [ {
+    "@id" : "urn:upm:demeter:p52:{{device}}:pos",
+    "@type" : "http://www.opengis.net/ont/sf#Point",
+    "http://www.opengis.net/ont/geosparql#wktLiteral" : "POINT(45.75 4.85)"
+  }, {
+    "@id" : "urn:upm:demeter:p52:node01",
+    "@type" : "Sensor",
+    "hasGeometry" : "urn:upm:demeter:p52:node01:pos"
+  },  {
+    "@id" : "urn:upm:demeter:p52:node01:obs-1514810172",
+    "@type" : "Observation",   
+    "hasResult" : ["urn:upm:demeter:p52:node01:obs-1514810172/temp","urn:upm:demeter:p52:node01:obs-1514810172/hum", "urn:upm:demeter:p52:node01:obs-1514810172/co2", "urn:upm:demeter:p52:node01:obs-1514810172/tvoc"] ,
+    "madeBySensor" : "urn:upm:demeter:p52:node01",
+    "resultTime" : "2021-08-01T12:36:12Z"
+  }, {
+    "@id" : "urn:upm:demeter:p52:node01:obs-1514810172/temp",
+    "@type" : "Result",
+    "identifier" : "temp",    
+    "numericValue" : "0.27121272683143616",
+    "unit" : "http://qudt.org/vocab/unit/DEG_C"
+  },
+ {
+    "@id" : "urn:upm:demeter:p52:node01:obs-1514810172/hum",
+    "@type" : "Result",
+    "identifier" : "hum",    
+    "numericValue" : "20.27121272683143616",
+    "unit" : "http://qudt.org/vocab/unit/PERCENT_RH"
+  },
+  {
+    "@id" : "urn:upm:demeter:p52:node01:obs-1514810172/co2",
+    "@type" : "Result",
+    "identifier" : "co2",    
+    "numericValue" : "0.27121272683143616",
+    "unit" : "http://qudt.org/vocab/unit/PPM"
+  }, {
+    "@id" : "urn:upm:demeter:p52:node01:obs-1514810172/tvoc",
+    "@type" : "Result",
+    "identifier" : "tvoc",    
+    "numericValue" : "0.27121272683143616",
+    "unit" : "http://qudt.org/vocab/unit/MilliGM-PER-M3"
+  } ],
+  "@context" : [ "https://w3id.org/demeter/agri-context.jsonld", {
+    "qudt-unit" : "http://qudt.org/vocab/unit/"
+  } ]
+}
