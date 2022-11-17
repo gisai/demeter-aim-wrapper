@@ -1,0 +1,38 @@
+{
+  "@graph" : [ {
+    "@id" : "urn:upm:demeter:p52:proccessId:123",
+    "@type" : "Weight-process",
+    "supervisor": "Sebastian",
+    "line": "L802",
+    "product": "Conchas Crema",
+    "real_weight_kg": 1.2,
+    "theoretical_weight_kg": 1,
+    "number_buckets": 2,
+    "number_units": 5,
+    "target_weight": 36,
+    "bucket_weight": 21.05,
+    "coil_weight": 0.75,
+    "coil_total_weight": 3.75,
+    "coil_bucket_weight": 2.7,
+    "underweight_margin": 4.5,
+    "overweight_margin": 4,
+    "tolerance_1": 9,
+    "tolerance_2": 4.5,
+    "tolerance_3": 4.5,
+    "tolerance_4": 9,
+    "tolerance_5": 3,
+    "tolerance_6": 15,
+    "tolerance_7": 1.5
+  }, 
+  {
+    "@id" : "urn:upm:demeter:p52:proccessId:456",
+    "@type" : "Notification-process",
+    "description": "Parada de produccion",
+    "stop_time": "2022-11-14 13:42:00",
+    "restart_time": "2022-11-14 13:42:00"
+  }
+],
+  "@context" : [ "https://w3id.org/demeter/agri-context.jsonld", {
+    "qudt-unit" : "http://qudt.org/vocab/unit/"
+  } ]
+}

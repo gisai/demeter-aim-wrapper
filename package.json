@@ -7,10 +7,12 @@
   },
   "dependencies": {
     "@ptkdev/json-token-replace": "^1.2.2",
+    "axios": "^1.1.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
+    "got": "^12.5.2",
     "http-errors": "~1.6.3",
     "log-timestamp": "^0.3.0",
     "morgan": "~1.9.1",
