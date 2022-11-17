@@ -1,0 +1,14 @@
+{
+  "@graph" : [ {
+    "@id" : "urn:upm:demeter:p52:{{device}}:pos",
+    "@type" : "http://www.opengis.net/ont/sf#Point",
+    "http://www.opengis.net/ont/geosparql#wktLiteral" : "{{device-location}}"
+  }, {
+    "@id" : "urn:upm:demeter:p52:{{device}}",
+    "@type" : "Sensor",
+    "hasGeometry" : "urn:upm:demeter:p52:{{device}}:pos"
+  } ],
+  "@context" : [ "https://w3id.org/demeter/agri-context.jsonld", {
+    "qudt-unit" : "http://qudt.org/vocab/unit/"
+  } ]
+}
