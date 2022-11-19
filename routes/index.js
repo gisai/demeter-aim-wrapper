@@ -1,4 +1,6 @@
 var express = require('express');
+const axios = require('axios');
+
 var router = express.Router();
 const Jtr = require("@ptkdev/json-token-replace");
 const jtr = new Jtr();
@@ -8,7 +10,23 @@ const { json } = require('express');
 const pool = new Pool({connectionString: 'postgresql://crate@localhost:5432/doc'})
 
 var queryLimit = 20 ; //We stablish this limit in the number of observations to return, to ease server's load
- 
+
+const GET_PROCESO_PESO = "http://localhost/ProductionQuality/backend/src/Server.php?request=getProcesosPeso";
+const GET_PROCESO_PESO_BY_ID = "http://localhost/ProductionQuality/backend/src/Server.php?request=getProcesosPesoById&id=";
+const GET_TOLERANCIAS_BY_ID = "http://localhost/ProductionQuality/backend/src/Server.php?request=getToleranciasById&id="
+const GET_PROCESO_INCIDENCIAS = "http://localhost/ProductionQuality/backend/src/Server.php?request=getProcesosIncidencia";
+const GET_PROCESO_INCIDENCIAS_BY_ID = "http://localhost/ProductionQuality/backend/src/Server.php?request=getProcesosIncidenciaById&id=";
+
+
+
+
+
+
+const asyncHandler = (fun) => (req, res, next) => {
+  Promise.resolve(fun(req, res, next))
+    .catch(next)
+}
+
 
 /* GET home page. */
 router.get('/aim/v1/getdevicedata', function(req, res, next) {
@@ -77,24 +95,213 @@ pool.query(querytext, queryvalues, (err, result) => {
 
 });
 
-router.get('/queryHelloWorld', function(req, res, next) {
-  console.log(`Parametros from: ${req.query.from} y to: ${req.query.to}`);
 
-  const text = "SELECT _id, * FROM doc.etnodo1 WHERE time_index >= '"+req.query.from+"' and time_index < '"+req.query.to+"'";
-  const values = [];
-  //const text = "SELECT _id, * FROM doc.etnodo1 WHERE time_index >= '$1' and time_index < '$2'";
-  //const values = [req.query.from, req.query.to];
+/* GET home page. */
+router.get('/aim/v1/getprocesosJSON', asyncHandler(async (req, res) => {
+
+  if (req.query.id) {
+    console.log(`New getProcesosJSON invocation with id: ${req.query.id}`);
+    var resultjson = {"weight_process": await convertirPesosAJson(req.query.id),  "notification_process": await convertirIncidenciasAJson(req.query.id) }; 
+
+  }  else {
+    console.log(`New getProcesosJSON invocation without id`);
+    var resultjson = {"weight_process": await convertirPesosAJson(),  "notification_process": await convertirIncidenciasAJson() }; 
+
+  }   
+
+
   
-pool.query(text, values, (err, result) => {
-  if (err) {
-    return console.error('Error executing query', err.stack)
+  res.json(resultjson);
+
+}));
+
+/* GET home page. */
+router.get('/aim/v1/getprocesosAIM', asyncHandler(async (req, res) => {
+
+  if (req.query.id) {
+    console.log(`New getprocesosAIM invocation with id: ${req.query.id}`);
+    var notification_process = await convertirIncidenciasAJson(req.query.id);
+  //console.log(notification_process);
+  var weight_process = await convertirPesosAJson(req.query.id);
+  //console.log (weight_process);
+   
+  }  else {
+    console.log(`New getprocesosAIM invocation without id`);
+    var resultjson = {"weight_process": await convertirPesosAJson(),  "notification_process": await convertirIncidenciasAJson() }; 
+    var notification_process = await convertirIncidenciasAJson();
+  //console.log(notification_process);
+  var weight_process = await convertirPesosAJson();
+  //console.log (weight_process);
+
+  }  
+
+
+  
+
+
+  var result = {};
+  result["@context"]= [ "https://w3id.org/demeter/agri-context.jsonld", {
+    "qudt-unit" : "http://qudt.org/vocab/unit/"
+  } ]
+
+  result["@graph"] = [];
+  for (var processid in notification_process){
+    for (const notification of notification_process[processid]){
+
+      console.log(notification);
+
+    var notification_result = {};
+    notification_result['@id']= "urn:upm:demeter:p52:proccessId:"+notification.id;
+    notification_result['@type']= "Notification-process";
+    notification_result['description']= notification.description;
+    notification_result['stop_time']= notification.stop_time;
+    notification_result['restart_time']= notification.restart_time;
+
+    result["@graph"].push (notification_result);
+
+    }
   }
-  console.log(result.rows) // brianc
 
-  res.json(result.rows);
+  
 
-})
-});
+  for (var processid in weight_process){
+      weight = weight_process[processid]
+ 
+      var weight_result = {};
+      weight_result['@id']= "urn:upm:demeter:p52:proccessId:"+processid;
+      weight_result['@type']= "Weight-process";
+      weight_result['supervisor']=weight.supervisor;
+      weight_result['line']=weight.line;
+      weight_result['product']=weight.product;
+      weight_result['real_weight_kg']=weight.real_weight_kg;
+      weight_result['theoretical_weight_kg']=weight.theoretical_weight_kg;
+      weight_result['number_buckets']=weight.number_buckets;
+      weight_result['number_units']=weight.number_units;
+      weight_result['target_weight']=weight.target_weight;
+      weight_result['bucket_weight']=weight.bucket_weight;
+      weight_result['coil_weight']=weight.coil_weight;
+      weight_result['coil_total_weight']=weight.coil_total_weight;
+      weight_result['coil_bucket_weight']=weight.coil_bucket_weight;
+      weight_result['underweight_margin']=weight.underweight_margin;
+      weight_result['overweight_margin']=weight.overweight_margin;
+      weight_result['tolerance_1']=weight.tolerance_1;
+      weight_result['tolerance_2']=weight.tolerance_2;
+      weight_result['tolerance_3']=weight.tolerance_3;
+      weight_result['tolerance_4']=weight.tolerance_4;
+      weight_result['tolerance_5']=weight.tolerance_5;
+      weight_result['tolerance_6']=weight.tolerance_6;
+      weight_result['tolerance_7']=weight.tolerance_7;
+
+      result["@graph"].push(weight_result);
+  
+  }
+
+
+
+
+
+
+
+  //var resultjson = {"weight_process": await convertirPesosAJson(),  "notification_process": await convertirIncidenciasAJson() }; 
+  res.json(result);
+
+}));
+
+
+async function sendGetRequest(url) {
+
+  let res = await axios.get(url);
+
+  let data = res.data;
+  //console.log(data);
+  return data;
+}
+
+
+async function convertirIncidenciasAJson(processId)
+            {
+                var result = {};
+                var map = new Map();
+                var incidencias;
+                if (processId) {
+                  incidencias = (await sendGetRequest(GET_PROCESO_INCIDENCIAS_BY_ID+processId))
+                } else {
+                  incidencias = (await sendGetRequest(GET_PROCESO_INCIDENCIAS))
+                }
+                
+                incidencias = incidencias["data"];
+
+                incidencias.forEach(element => {
+                    var nuevo = {
+                      id: element.id_personalizado,
+                        description: element.descripcion,
+                        stop_time: element.horaParada,
+                        restart_time: element.horaParada
+                    };
+
+                    if (!map.has(element.id_personalizado))
+                        map.set(element.id_personalizado, []);
+
+                    map.get(element.id_personalizado).push(nuevo);
+                });
+
+                result = Object.fromEntries(map);
+                //console.log(JSON.stringify(result));
+
+                return result;
+            }
+
+            async function convertirPesosAJson(processId)
+            {
+                var result = {};
+                var pesos;
+                if (processId) {
+                  pesos = await sendGetRequest(GET_PROCESO_PESO_BY_ID+processId);
+                } else {
+                  pesos = await sendGetRequest(GET_PROCESO_PESO);
+                }
+                console.log(pesos);
+                pesos = pesos["data"];
+                var incidencias = await sendGetRequest(GET_PROCESO_PESO);
+                incidencias = incidencias["data"];
+
+                for (const element of pesos) {
+                  var tolerancias = await sendGetRequest(GET_TOLERANCIAS_BY_ID + element.id_tolerancias);
+                    tolerancias = tolerancias["data"][0];
+
+                    var datos = {
+                        supervisor: element.jefe,
+                        line: element.linea,
+                        product: element.producto,
+                        real_weight_kg: element.kilos_reales,
+                        theoretical_weight_kg: element.kilos_teoricos,
+                        number_buckets: element.numero_cubetas,
+                        number_units: element.numero_unidades,
+                        target_weight: element.peso_objetivo,
+                        bucket_weight: element.peso_cubetas,
+                        coil_weight: element.peso_bobinas,
+                        coil_total_weight: element.peso_total_bobina,
+                        coil_bucket_weight: element.peso_bobina_cubetas,
+                        underweight_margin: element.margen_subpeso,
+                        overweight_margin: element.margen_sobrepeso,
+                        tolerance_1: tolerancias.tolerancia_1,
+                        tolerance_2: tolerancias.tolerancia_2,
+                        tolerance_3: tolerancias.tolerancia_3,
+                        tolerance_4: tolerancias.tolerancia_4,
+                        tolerance_5: tolerancias.tolerancia_5,
+                        tolerance_6: tolerancias.tolerancia_6,
+                        tolerance_7: tolerancias.tolerancia_7
+                    };
+                    
+                    result[element.id_personalizado] = datos;
+
+                }
+                //console.log(JSON.stringify(result).replaceAll(" ", "_"));
+
+                return result;
+            }
+
+
 
 
 module.exports = router;
