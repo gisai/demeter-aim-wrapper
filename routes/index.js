@@ -11,11 +11,11 @@ const pool = new Pool({connectionString: 'postgresql://crate@localhost:5432/doc'
 
 var queryLimit = 20 ; //We stablish this limit in the number of observations to return, to ease server's load
 
-const GET_PROCESO_PESO = "http://localhost/ProductionQuality/backend/src/Server.php?request=getProcesosPeso";
-const GET_PROCESO_PESO_BY_ID = "http://localhost/ProductionQuality/backend/src/Server.php?request=getProcesosPesoById&id=";
-const GET_TOLERANCIAS_BY_ID = "http://localhost/ProductionQuality/backend/src/Server.php?request=getToleranciasById&id="
-const GET_PROCESO_INCIDENCIAS = "http://localhost/ProductionQuality/backend/src/Server.php?request=getProcesosIncidencia";
-const GET_PROCESO_INCIDENCIAS_BY_ID = "http://localhost/ProductionQuality/backend/src/Server.php?request=getProcesosIncidenciaById&id=";
+const GET_PROCESO_PESO = "http://localhost/backend/src/Server.php?request=getProcesosPeso";
+const GET_PROCESO_PESO_BY_ID = "http://localhost/backend/src/Server.php?request=getProcesosPesoById&id=";
+const GET_TOLERANCIAS_BY_ID = "http://localhost/backend/src/Server.php?request=getToleranciasById&id="
+const GET_PROCESO_INCIDENCIAS = "http://localhost/backend/src/Server.php?request=getProcesosIncidencia";
+const GET_PROCESO_INCIDENCIAS_BY_ID = "http://localhost/backend/src/Server.php?request=getProcesosIncidenciaById&id=";
 
 
 
